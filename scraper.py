@@ -6,8 +6,8 @@ import time
 
 reddit_home = 'https://www.reddit.com'
 slash = '/r/'
-subreddit = 'DataScience'
-sort_by = '/hot/'
+subreddit = 'SuicideWatch'  # 'DataScience'
+sort_by = '/new/'  # '/hot/'
 scroll_n_times = 1000
 scrape_comments = True
 erase_db_first = True
@@ -23,21 +23,21 @@ BSS = SoupScraper(reddit_home,
 SelScraper.setup_chrome_browser()
 
 # Collect links from subreddit
-links = SelScraper.collect_links(page = reddit_home + 
-                                        slash + subreddit + sort_by,
-                                 scroll_n_times = scroll_n_times)
+links = SelScraper.collect_links(page=reddit_home +
+                                 slash + subreddit + sort_by,
+                                 scroll_n_times=scroll_n_times)
 
 # Find the <script> with id='data' for each link
-script_data = BSS.get_scripts(urls = links)
+script_data = BSS.get_scripts(urls=links)
 
 # Transforms each script with data into a Python dict, returned as [{}, {}...]
-BSS.data = SelScraper.reddit_data_to_dict(script_data = script_data)
+BSS.data = SelScraper.reddit_data_to_dict(script_data=script_data)
 
 print('Scraping data...')
 progress = ProgressBar(len(links))
 for i, current_data in enumerate(BSS.data):
     progress.update()
-    
+
     BSS.get_url_id_and_url_title(BSS.urls[i],
                                  current_data, i)
     BSS.get_title()
@@ -61,11 +61,11 @@ try:
     SQL.create_or_connect_db(erase_first=erase_db_first)
     # [0] = post, [1] = comment, [2] = link
     for i in range(len(BSS.post_data)):
-        SQL.insert('post', data = BSS.post_data[i])
-        SQL.insert('link', data = BSS.link_data[i])
-        
+        SQL.insert('post', data=BSS.post_data[i])
+        SQL.insert('link', data=BSS.link_data[i])
+
         if scrape_comments:
-            SQL.insert('comment', data = BSS.comment_data[i])
+            SQL.insert('comment', data=BSS.comment_data[i])
 except Exception as ex:
     print(ex)
 finally:
