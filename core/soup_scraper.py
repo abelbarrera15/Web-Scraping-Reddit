@@ -157,7 +157,10 @@ class SoupScraper():
         flair_arr = []
         if flairs is not None:
             for flair in flairs:
-                flair_arr.append(flair['text'])
+                try:
+                    flair_arr.append(flair['text'])
+                except Exception as e:
+                    flair_arr.append('Scrape error ' + str(e))
         
         self.flairs.append(flair_arr)
     
